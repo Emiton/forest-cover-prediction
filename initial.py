@@ -9,7 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import Perceptron
 from sklearn.svm import SVC
 
 
@@ -19,12 +19,14 @@ def init_data(normalize=False):
     """
     data = pd.read_csv('train.csv')
 
+    data = data.drop(['Id', 'Soil_Type7', 'Soil_Type15'], axis=1)
+
     X = data.iloc[:, :-1].values
     y = data.iloc[:, -1].values
 
     if normalize:
         min_max_scaler = MinMaxScaler()
-        X = min_max_scaler.fit_transform(X)
+        X = min_max_scaler.fit_transform(X[:, :10])
 
     return X, y
 
@@ -60,9 +62,11 @@ def model_analysis(model, X, y):
 knn = KNeighborsClassifier()
 lr = LogisticRegression()
 d_tree = DecisionTreeClassifier()
+perceptron = Perceptron()
 
 X, y = init_data(normalize=False)
 
 model_analysis(knn, X, y)
 model_analysis(lr, X, y)
 model_analysis(d_tree, X, y)
+model_analysis(perceptron, X, y)
